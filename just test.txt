@@ -1,5 +1,6 @@
 import pygame
 import os
+import random
 
 #H+W Screen
 Width = 1366
@@ -18,6 +19,7 @@ pygame.display.set_caption('Test')
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder,'img','ให้หนุน','MC','x3')
 direction = 0
+
 
 
 class Seeker(pygame.sprite.Sprite):
@@ -81,9 +83,9 @@ class Seeker(pygame.sprite.Sprite):
 
     def attack(self):
         
-        attack_effect =Attack_effect(self.rect.centerx,self.rect.top)
-        all_sprites.add(attack_effect)
-        attack_effects.add(attack_effect)
+        attack =Attack_effect(self.rect.centerx,self.rect.top)
+        all_sprites.add(attack)
+        attack_effects.add(attack)
 
 class HP1(pygame.sprite.Sprite):
     def __init__(self):
@@ -91,7 +93,7 @@ class HP1(pygame.sprite.Sprite):
         self.image = pygame.Surface((40,40))
         self.image.fill(Pink)
         self.rect =self.image.get_rect()
-        self.rect.left = 60
+        self.rect.left = 180
         self.rect.bottom = 70
 
 class HP2(pygame.sprite.Sprite):
@@ -100,7 +102,7 @@ class HP2(pygame.sprite.Sprite):
         self.image = pygame.Surface((40,40))
         self.image.fill(Pink)
         self.rect =self.image.get_rect()
-        self.rect.left = 110
+        self.rect.left = 120
         self.rect.bottom = 70
 
 class HP3(pygame.sprite.Sprite):
@@ -109,10 +111,8 @@ class HP3(pygame.sprite.Sprite):
         self.image = pygame.Surface((40,40))
         self.image.fill(Pink)
         self.rect =self.image.get_rect()
-        self.rect.left = 160
+        self.rect.left = 60
         self.rect.bottom = 70
-
-
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -141,18 +141,15 @@ class Attack_effect(pygame.sprite.Sprite):
         #self.rect.y += self.speedy
         if self.rect.bottom < 0:
             self.kill
-
-    
-
-
-        
     
 seeker = Seeker()
+#attack_effect =Attack_effect()
 all_sprites = pygame.sprite.Group()
 all_sprites.add(seeker)
 enemy = pygame.sprite.Group()
 hps = pygame.sprite.Group
 attack_effects = pygame.sprite.Group()
+    
 hp1 = HP1()
 all_sprites.add(hp1)
 hps.add(hp1)
@@ -162,7 +159,7 @@ hps.add(hp2)
 hp3 = HP3()
 all_sprites.add(hp3)
 hps.add(hp3)
-print(hps)
+
 
 em = Enemy()
 all_sprites.add(em)
@@ -176,29 +173,26 @@ while Game_running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 seeker.attack()
+
+
         
         
         all_sprites.update()
-        hits = pygame.sprite.groupcollide(enemy,attack_effects,True,True)
-        i = 0
-        hits = pygame.sprite.spritecollide(seeker,enemy,False)
+        hits_thing = pygame.sprite.groupcollide(enemy,attack_effects,True,True)
 
+       
+                                
+            
+        
+        hits = pygame.sprite.spritecollide(seeker,enemy,False)
         #check HP if HP run out,seeker will die
-        if hits:
-            i += 1
-        if i == 1: 
-            hp3.image.fill(Black)
-        elif i == 2:
-            hp2.image.fill(Black)
-        elif i == 3:
-            hp1.image.fill(Black)
-        elif i >= 3:
-            Game_running = False
-        print(i)
+        hit_sec = 0
         screen.fill(Black)
         all_sprites.draw(screen)
         pygame.display.flip()
         
+        
+
         
 
 
