@@ -1,6 +1,6 @@
 import pygame
 import os
-import random
+
 
 #H+W Screen
 Width = 1366
@@ -17,9 +17,10 @@ Rebeccapurple = (102,51,153)
 screen = pygame.display.set_mode((Width,Height))
 pygame.display.set_caption('Test')
 game_folder = os.path.dirname(__file__)
-img_folder = os.path.join(game_folder,'img','ให้หนุน','MC','x3')
+img_folder = os.path.join(game_folder,'ให้หนุน','MC','x3')
 direction = 0
-
+FPS = 30
+clock = pygame.time.Clock()
 
 
 class Seeker(pygame.sprite.Sprite):
@@ -42,24 +43,24 @@ class Seeker(pygame.sprite.Sprite):
         self.speedx =0
         self.speedy =0
         keystate = pygame.key.get_pressed()
-        if keystate[pygame.K_LEFT]:
+        if keystate[pygame.K_a]:
             self.image = pygame.image.load(Seeker_left).convert()
             self.image.set_colorkey(Black)
             self.speedx = -20
             
 
         
-        if keystate[pygame.K_RIGHT]:
+        if keystate[pygame.K_d]:
             self.image = pygame.image.load(Seeker_right).convert()
             self.image.set_colorkey(Black)
             self.speedx = 20
             
-        if keystate[pygame.K_DOWN]:
+        if keystate[pygame.K_s]:
             self.image = pygame.image.load(Seeker_down).convert()
             self.image.set_colorkey(Black)
             self.speedy = 20
             
-        if keystate[pygame.K_UP]:
+        if keystate[pygame.K_w]:
             self.image = pygame.image.load(Seeker_up).convert()
             self.image.set_colorkey(Black)
             self.speedy = -20
@@ -114,6 +115,14 @@ class HP3(pygame.sprite.Sprite):
         self.rect.left = 60
         self.rect.bottom = 70
 
+def lose_hp():
+    if hit_count == 1:
+        hp1.image.fill(Black)
+    elif hit_count == 2:
+        hp2.image.fill(Black)
+    elif hit_count == 3:
+        hp3.image.fill(Black)
+
 
 class Enemy(pygame.sprite.Sprite):
 
@@ -141,7 +150,8 @@ class Attack_effect(pygame.sprite.Sprite):
         #self.rect.y += self.speedy
         if self.rect.bottom < 0:
             self.kill
-    
+
+
 seeker = Seeker()
 #attack_effect =Attack_effect()
 all_sprites = pygame.sprite.Group()
@@ -161,11 +171,15 @@ all_sprites.add(hp3)
 hps.add(hp3)
 
 
+
 em = Enemy()
 all_sprites.add(em)
 enemy.add(em)
 
 Game_running = True
+hit_status = False
+hit_count = 0
+
 while Game_running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -184,9 +198,21 @@ while Game_running:
                                 
             
         
-        hits = pygame.sprite.spritecollide(seeker,enemy,False)
         #check HP if HP run out,seeker will die
-        hit_sec = 0
+        
+        if pygame.sprite.spritecollide(seeker,enemy,False):
+            if not hit_status :
+                hit_status = True
+                hit_count +=1
+                lose_hp()
+        else :
+            hit_status = False
+        if hit_count >= 3:
+            Game_running=False
+           
+        clock.tick(FPS)
+        print(hit_status)
+        print(hit_count)
         screen.fill(Black)
         all_sprites.draw(screen)
         pygame.display.flip()
