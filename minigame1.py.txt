@@ -114,12 +114,10 @@ for i in range (10):
     num3_Block = Num3_Block()
     all_sprites.add(num3_Block)
     Num3Block.add(num3_Block)
-    Num3_4_Block.add(num3_Block)
 for i in range(10):
     num4_Block = Num4_Block()
     all_sprites.add(num4_Block)
     Num4Block.add(num4_Block)
-    Num3_4_Block.add(num4_Block)
 
 for i in range (10):
     num5_Block = Num5_Block()
