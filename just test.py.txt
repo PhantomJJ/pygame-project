@@ -17,17 +17,19 @@ Rebeccapurple = (102,51,153)
 screen = pygame.display.set_mode((Width,Height))
 pygame.display.set_caption('Test')
 game_folder = os.path.dirname(__file__)
-img_folder = os.path.join(game_folder,'ให้หนุน','MC','x3')
+img_folder = os.path.join(game_folder,'ให้หนุน')
+dest = (100,100)
 direction = 0
 FPS = 30
 clock = pygame.time.Clock()
-
+background_pic = os.path.join(img_folder,'MC','2x','x2.jpeg')
+background = pygame.image.load(background_pic)
 
 class Seeker(pygame.sprite.Sprite):
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        Seeker_idle = os.path.join(img_folder,'ไฟล์_002.png')
+        Seeker_idle = os.path.join(img_folder,'MC','x3','ไฟล์_002.png')
         self.image = pygame.image.load(Seeker_idle).convert()
         self.image.set_colorkey(Black)
         self.rect = self.image.get_rect()
@@ -35,10 +37,10 @@ class Seeker(pygame.sprite.Sprite):
         self.rect.bottom = Height / 2
 
     def update(self):
-        Seeker_left = os.path.join(img_folder,'ไฟล์_001.png')
-        Seeker_right = os.path.join(img_folder,'ไฟล์_000.png')
-        Seeker_up = os.path.join(img_folder,'ไฟล์_003.png')
-        Seeker_down = os.path.join(img_folder,'ไฟล์_002.png')
+        Seeker_left = os.path.join(img_folder,'MC','x3','ไฟล์_001.png')
+        Seeker_right = os.path.join(img_folder,'MC','x3','ไฟล์_000.png')
+        Seeker_up = os.path.join(img_folder,'MC','x3','ไฟล์_003.png')
+        Seeker_down = os.path.join(img_folder,'MC','x3','ไฟล์_002.png')
         self.speedx =0
         self.speedy =0
         keystate = pygame.key.get_pressed()
@@ -209,7 +211,9 @@ while Game_running:
             Game_running=False
            
         clock.tick(FPS)
-        screen.fill(Black)
+        
+        screen.blit(background,background.get_rect(center = (Width/2, Height/2)))
+
         all_sprites.draw(screen)
         pygame.display.flip()
         
