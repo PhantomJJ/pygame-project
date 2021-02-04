@@ -18,7 +18,6 @@ screen = pygame.display.set_mode((Width,Height))
 pygame.display.set_caption('Test')
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder,'ให้หนุน')
-dest = (100,100)
 direction = 0
 FPS = 30
 clock = pygame.time.Clock()
