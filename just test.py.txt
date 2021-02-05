@@ -3,8 +3,8 @@ import os
 
 
 #H+W Screen
-Width = 1366
-Height = 768
+Width = 1920
+Height = 1080
 
 #Color
 Pink = (255,153,204)
@@ -46,24 +46,24 @@ class Seeker(pygame.sprite.Sprite):
         if keystate[pygame.K_a]:
             self.image = pygame.image.load(Seeker_left).convert()
             self.image.set_colorkey(Black)
-            self.speedx = -20
+            self.speedx = -5
             
 
         
         if keystate[pygame.K_d]:
             self.image = pygame.image.load(Seeker_right).convert()
             self.image.set_colorkey(Black)
-            self.speedx = 20
+            self.speedx = 5
             
         if keystate[pygame.K_s]:
             self.image = pygame.image.load(Seeker_down).convert()
             self.image.set_colorkey(Black)
-            self.speedy = 20
+            self.speedy = 5
             
         if keystate[pygame.K_w]:
             self.image = pygame.image.load(Seeker_up).convert()
             self.image.set_colorkey(Black)
-            self.speedy = -20
+            self.speedy = -5
             
         self.rect.x += self.speedx
         self.rect.y += self.speedy
@@ -79,6 +79,21 @@ class Seeker(pygame.sprite.Sprite):
         
         if self.rect.bottom > Height:
             self.rect.bottom = Height
+
+        if self.rect.left <= -10 and self.rect.top <= 334 :
+            self.rect.left = -10
+            self.rect.top = 334
+        
+        #if self.rect.right >= 86 and self.rect.top <= 334:
+            #self.rect.right = 86
+            #self.rect.top =334
+        
+        #if self.rect.right >= 86 and self.rect.top <= 374:
+            #self.rect.right = 86
+            #self.rect.top = 374
+         
+            
+            
 
 
 
@@ -192,6 +207,10 @@ while Game_running:
         
         all_sprites.update()
         hits_thing = pygame.sprite.groupcollide(enemy,attack_effects,True,True)
+        print("top =" , seeker.rect.top)
+        print("bottom =" , seeker.rect.bottom)
+        print("left =" , seeker.rect.left)
+        print("right =" , seeker.rect.right)
 
        
                                 
