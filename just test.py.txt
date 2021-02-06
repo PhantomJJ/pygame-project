@@ -1,5 +1,7 @@
 import pygame
 import os
+import random
+
 
 
 #H+W Screen
@@ -64,6 +66,8 @@ class Seeker(pygame.sprite.Sprite):
             self.image = pygame.image.load(Seeker_up).convert()
             self.image.set_colorkey(Black)
             self.speedy = -5
+
+        
             
         self.rect.x += self.speedx
         self.rect.y += self.speedy
@@ -80,17 +84,6 @@ class Seeker(pygame.sprite.Sprite):
         if self.rect.bottom > Height:
             self.rect.bottom = Height
 
-        if self.rect.left <= -10 and self.rect.top <= 334 :
-            self.rect.left = -10
-            self.rect.top = 334
-        
-        #if self.rect.right >= 86 and self.rect.top <= 334:
-            #self.rect.right = 86
-            #self.rect.top =334
-        
-        #if self.rect.right >= 86 and self.rect.top <= 374:
-            #self.rect.right = 86
-            #self.rect.top = 374
          
             
             
@@ -146,14 +139,16 @@ class Enemy(pygame.sprite.Sprite):
         self.image = pygame.Surface((50,90))
         self.image.fill(RED)
         self.rect =self.image.get_rect()
-        self.rect.centerx = Width / 4
-        self.rect.bottom = Height / 2
+        self.rect.top = random.randrange(4,Height)
+        self.rect.centerx = random.randrange(10,Width+10) 
+    
+    
 
 class Attack_effect(pygame.sprite.Sprite):
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((90,20))
-        self.image.fill(White)
+        self.image.fill(Black)
         self.rect = self.image.get_rect()
         self.rect.centerx = x
         self.rect.bottom = y
@@ -185,10 +180,10 @@ all_sprites.add(hp3)
 hps.add(hp3)
 
 
-
-em = Enemy()
-all_sprites.add(em)
-enemy.add(em)
+for i in range(5):
+    em = Enemy()
+    all_sprites.add(em)
+    enemy.add(em)
 
 Game_running = True
 hit_status = False
@@ -201,16 +196,22 @@ while Game_running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 seeker.attack()
+            if event.key == pygame.K_t:
+                print("mic on")
 
 
         
         
         all_sprites.update()
         hits_thing = pygame.sprite.groupcollide(enemy,attack_effects,True,True)
-        print("top =" , seeker.rect.top)
-        print("bottom =" , seeker.rect.bottom)
-        print("left =" , seeker.rect.left)
-        print("right =" , seeker.rect.right)
+        if hits_thing:
+            em =Enemy()
+            all_sprites.add(em)
+            enemy.add(em)
+        #print("top =" , seeker.rect.top)
+        #print("bottom =" , seeker.rect.bottom)
+        #print("left =" , seeker.rect.left)
+        #print("right =" , seeker.rect.right)
 
        
                                 
