@@ -3,7 +3,7 @@ import os
 import random
 
 
-
+pygame.init()
 #H+W Screen
 Width = 1920
 Height = 1080
@@ -84,17 +84,36 @@ class Seeker(pygame.sprite.Sprite):
         if self.rect.bottom > Height:
             self.rect.bottom = Height
 
+    def attack(self):
+        attack =Attack_effect(self.rect.centerx,self.rect.top)
+        all_sprites.add(attack)
+        attack_effects.add(attack)
+
+
+
+        
+class Leaderboard(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((100,100))
+        self.image.fill(Indigo)
+        self.rect = self.image.get_rect()
+        self.rect.right = 180
+        self.rect.top = 260
+
+
+
+
+
+
+
          
             
             
 
 
 
-    def attack(self):
-        
-        attack =Attack_effect(self.rect.centerx,self.rect.top)
-        all_sprites.add(attack)
-        attack_effects.add(attack)
+    
 
 class HP1(pygame.sprite.Sprite):
     def __init__(self):
@@ -124,11 +143,11 @@ class HP3(pygame.sprite.Sprite):
         self.rect.bottom = 70
 
 def lose_hp():
-    if hit_count == 1:
+    if char_hit_count == 1:
         hp1.image.fill(Black)
-    elif hit_count == 2:
+    elif char_hit_count == 2:
         hp2.image.fill(Black)
-    elif hit_count == 3:
+    elif char_hit_count == 3:
         hp3.image.fill(Black)
 
 
@@ -139,8 +158,8 @@ class Enemy(pygame.sprite.Sprite):
         self.image = pygame.Surface((50,90))
         self.image.fill(RED)
         self.rect =self.image.get_rect()
-        self.rect.top = random.randrange(4,Height)
-        self.rect.centerx = random.randrange(10,Width+10) 
+        self.rect.top = random.randrange(169,900)
+        self.rect.centerx = random.randrange(267,1500) 
     
     
 
@@ -161,14 +180,17 @@ class Attack_effect(pygame.sprite.Sprite):
             self.kill
 
 
+
+
 seeker = Seeker()
-#attack_effect =Attack_effect()
 all_sprites = pygame.sprite.Group()
 all_sprites.add(seeker)
 enemy = pygame.sprite.Group()
 hps = pygame.sprite.Group
 attack_effects = pygame.sprite.Group()
-    
+leaderboard = Leaderboard()
+all_sprites.add(leaderboard)
+
 hp1 = HP1()
 all_sprites.add(hp1)
 hps.add(hp1)
@@ -179,15 +201,22 @@ hp3 = HP3()
 all_sprites.add(hp3)
 hps.add(hp3)
 
-
+em_count = 0
 for i in range(5):
     em = Enemy()
     all_sprites.add(em)
     enemy.add(em)
+    em_count += 1
 
 Game_running = True
-hit_status = False
-hit_count = 0
+char_hit_status = False
+char_hit_count = 0
+
+score_p1 = 0
+font = pygame.font.SysFont("comicsansms", 20)
+Score_p1 = font.render("Hello, World", True, (0, 128, 0))
+
+
 
 while Game_running:
     for event in pygame.event.get():
@@ -203,15 +232,22 @@ while Game_running:
         
         
         all_sprites.update()
-        hits_thing = pygame.sprite.groupcollide(enemy,attack_effects,True,True)
-        if hits_thing:
-            em =Enemy()
-            all_sprites.add(em)
-            enemy.add(em)
-        #print("top =" , seeker.rect.top)
-        #print("bottom =" , seeker.rect.bottom)
-        #print("left =" , seeker.rect.left)
-        #print("right =" , seeker.rect.right)
+        hits_em = pygame.sprite.groupcollide(enemy,attack_effects,True,True)
+        if hits_em:
+            if hits_em:
+                em_count -= 1
+                score_p1 += 50
+            if em_count <= 0:
+                for i in range(5):
+                    em = Enemy()
+                    all_sprites.add(em)
+                    enemy.add(em)
+                    em_count += 1
+
+        print("top =" , seeker.rect.top)
+        print("bottom =" , seeker.rect.bottom)
+        print("left =" , seeker.rect.left)
+        print("right =" , seeker.rect.right)
 
        
                                 
@@ -220,18 +256,21 @@ while Game_running:
         #check HP if HP run out,seeker will die
         
         if pygame.sprite.spritecollide(seeker,enemy,False):
-            if not hit_status :
-                hit_status = True
-                hit_count +=1
+            if not char_hit_status :
+                char_hit_status = True
+                char_hit_count += 1
                 lose_hp()
+                score_p1 -= 100
         else :
             hit_status = False
-        if hit_count >= 3:
+        if char_hit_count >= 3:
             Game_running=False
            
         clock.tick(FPS)
         
         screen.blit(background,background.get_rect(center = (Width/2, Height/2)))
+        screen.blit(Score_p1,250,250)
+
 
         all_sprites.draw(screen)
         pygame.display.flip()
