@@ -49,8 +49,6 @@ class Seeker(pygame.sprite.Sprite):
             self.image = pygame.image.load(Seeker_left).convert()
             self.image.set_colorkey(Black)
             self.speedx = -5
-            
-
         
         if keystate[pygame.K_d]:
             self.image = pygame.image.load(Seeker_right).convert()
@@ -121,8 +119,8 @@ class HP1(pygame.sprite.Sprite):
         self.image = pygame.Surface((40,40))
         self.image.fill(Pink)
         self.rect =self.image.get_rect()
-        self.rect.left = 180
-        self.rect.bottom = 70
+        self.rect.left = 300
+        self.rect.bottom = 200
 
 class HP2(pygame.sprite.Sprite):
     def __init__(self):
@@ -130,8 +128,8 @@ class HP2(pygame.sprite.Sprite):
         self.image = pygame.Surface((40,40))
         self.image.fill(Pink)
         self.rect =self.image.get_rect()
-        self.rect.left = 120
-        self.rect.bottom = 70
+        self.rect.left = 360
+        self.rect.bottom = 200
 
 class HP3(pygame.sprite.Sprite):
     def __init__(self):
@@ -139,8 +137,8 @@ class HP3(pygame.sprite.Sprite):
         self.image = pygame.Surface((40,40))
         self.image.fill(Pink)
         self.rect =self.image.get_rect()
-        self.rect.left = 60
-        self.rect.bottom = 70
+        self.rect.left = 420
+        self.rect.bottom = 200
 
 def lose_hp():
     if char_hit_count == 1:
@@ -155,8 +153,11 @@ class Enemy(pygame.sprite.Sprite):
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((50,90))
-        self.image.fill(RED)
+        #self.image = pygame.Surface((50,90))
+        #self.image.fill(RED)
+        Enemy_idle = os.path.join(img_folder,'SLIME_IDLE.png')
+        self.image = pygame.image.load(Enemy_idle).convert()
+        self.image.set_colorkey(Black)
         self.rect =self.image.get_rect()
         self.rect.top = random.randrange(169,900)
         self.rect.centerx = random.randrange(267,1500) 
@@ -202,6 +203,7 @@ all_sprites.add(hp3)
 hps.add(hp3)
 
 em_count = 0
+wave = 1
 for i in range(5):
     em = Enemy()
     all_sprites.add(em)
@@ -213,8 +215,8 @@ char_hit_status = False
 char_hit_count = 0
 
 score_p1 = 0
-font = pygame.font.SysFont("comicsansms", 20)
-Score_p1 = font.render("Hello, World", True, (0, 128, 0))
+#font = pygame.font.SysFont("comicsansms", 20)
+#Score_p1 = font.render("Hello, World", True, (0, 128, 0))
 
 
 
@@ -238,7 +240,8 @@ while Game_running:
                 em_count -= 1
                 score_p1 += 50
             if em_count <= 0:
-                for i in range(5):
+                wave += 1
+                for i in range(5*wave):
                     em = Enemy()
                     all_sprites.add(em)
                     enemy.add(em)
@@ -262,15 +265,15 @@ while Game_running:
                 lose_hp()
                 score_p1 -= 100
         else :
-            hit_status = False
+            char_hit_status = False
         if char_hit_count >= 3:
             Game_running=False
            
         clock.tick(FPS)
         
         screen.blit(background,background.get_rect(center = (Width/2, Height/2)))
-        screen.blit(Score_p1,250,250)
-
+        #screen.blit(Score_p1,250,250)
+        print(img_folder)
 
         all_sprites.draw(screen)
         pygame.display.flip()
