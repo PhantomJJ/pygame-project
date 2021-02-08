@@ -66,10 +66,6 @@ class Seeker(pygame.sprite.Sprite):
             self.image.set_colorkey(Black)
             self.speedy = -5
         
-
-
-        
-            
         self.rect.x += self.speedx
         self.rect.y += self.speedy
         
@@ -84,22 +80,14 @@ class Seeker(pygame.sprite.Sprite):
         
         if self.rect.bottom > Height:
             self.rect.bottom = Height
-
+    
     def attack(self):
-        attack =Attack_effect(self.rect.centerx,self.rect.top)
-        all_sprites.add(attack)
-        attack_effects.add(attack)
+        attack_effect = Attack_effect(self.rect.centerx,self.rect.top)
+        all_sprites.add(attack_effect)
+        attack_effects.add(attack_effect)
 
-    def rotate(self):
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        rel_x, rel_y = mouse_x - self.x, mouse_y - self.y
-        angle = (180 / math.pi) * -math.atan2(rel_y, rel_x)
-        self.image = pygame.transform.rotate(self.original_image, int(angle))
-        self.rect = self.image.get_rect(center=self.position)
+    
 
-
-
-        
 #class Leaderboard(pygame.sprite.Sprite):
     #def __init__(self):
         #pygame.sprite.Sprite.__init__(self)
@@ -110,18 +98,6 @@ class Seeker(pygame.sprite.Sprite):
         #self.rect.top = 260
 
 
-
-
-
-
-
-         
-            
-            
-
-
-
-    
 
 class HP1(pygame.sprite.Sprite):
     def __init__(self):
@@ -174,23 +150,31 @@ class Enemy(pygame.sprite.Sprite):
     
     
 
-class Attack_effect(Seeker):
-    def __init__(self, color, x, y, width, height, speed, targetx,targety):
-        super().__init__(color,x, y, Width, Height,speed)
-        angle = math.atan2(targety-y, targetx-x) #get angle to target in radians
-        print('Angle in degrees:', int(angle*180/math.pi))
-        self.dx = math.cos(angle)*speed
-        self.dy = math.sin(angle)*speed
-        self.x = x
-        self.y = y
+class Attack_effect(pygame.sprite.Sprite):
+    def __init__(self,x,y):
+        #angle = math.atan2(y, x) #get angle to target in radians
+        #print('Angle in degrees:', int(angle*180/math.pi))
+        #self.dx = math.cos(angle)*speed
+        #self.dy = math.sin(angle)*speed
+        #self.x = x
+        #self.y = y
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((10,20))
+        self.image.fill(RED)
+        self.rect =self.image.get_rect()
+        self.rect.bottom =y
+        self.rect.centerx =x
+        self.speedy = -10
 
-
-    
     def update(self):
+        #self.x and self.y are floats (decimals) so I get more accuracy
+        #if I change self.x and y and then convert to an integer for
+        #the rectangle.
+        #self.x = self.x + self.dx
+        #self.y = self.y + self.dy
+        #self.rect.x = int(self.x)
+        #self.rect.y = int(self.y)
         self.rect.y += self.speedy
-        if self.rect.bottom < 0:
-            self.kill
-
 
 
 
@@ -224,10 +208,9 @@ for i in range(5):
 Game_running = True
 char_hit_status = False
 char_hit_count = 0
-
+speed = 10
 score_p1 = 0
-#font = pygame.font.SysFont("comicsansms", 20)
-#Score_p1 = font.render("Hello, World", True, (0, 128, 0))
+
 
 
 
@@ -238,17 +221,10 @@ while Game_running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 seeker.attack()
-            if event.key == pygame.K_t:
+            elif event.key == pygame.K_t:
                 print("mic on")
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            x,y = pygame.mouse.get_pos()
-            #print(x,y)
-            a_e = Attack_effect(Black, sq.rect.centerx, sq.rect.centery, 20,20, 20, x,y)
-            attack_effect.append(a_e)
 
 
-        
-        
         all_sprites.update()
         hits_em = pygame.sprite.groupcollide(enemy,attack_effects,True,True)
         if hits_em:
