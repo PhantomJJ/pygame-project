@@ -54,12 +54,17 @@ class Square:
     def draw(self, surface):
         pygame.draw.rect(surface, self.color, self.rect)
 
-
+ 
 #Inheritance
 class Bullet(Square):
     def __init__(self, color, x, y, width, height, speed, targetx,targety):
         super().__init__(color, x, y, width, height, speed)
         angle = math.atan2(targety-y, targetx-x) #get angle to target in radians
+        print("targetx =",targetx)
+        print("targety =", targety)
+        print("x =",x)
+        print("y =",y)
+
         print('Angle in degrees:', int(angle*180/math.pi))
         self.dx = math.cos(angle)*speed
         self.dy = math.sin(angle)*speed
@@ -107,7 +112,7 @@ while not done:
                 bullets.append(b)
         if event.type == pygame.MOUSEBUTTONDOWN:
             x,y = pygame.mouse.get_pos()
-            #print(x,y)
+            print(x,y)
             b = Bullet(red, sq.rect.centerx, sq.rect.centery, 20,20, 20, x,y)
             bullets.append(b)
 
@@ -121,7 +126,8 @@ while not done:
         sq.moveDirection('S')
     if pressed[pygame.K_d]:
         sq.moveDirection('E')
-        
+    
+    
     #Update game objects
     for b in bullets:
         b.move()

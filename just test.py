@@ -2,6 +2,7 @@ import pygame
 import os
 import random
 import math
+from pygame.math import Vector2
 
 
 pygame.init()
@@ -29,14 +30,17 @@ background = pygame.image.load(background_pic)
 
 class Seeker(pygame.sprite.Sprite):
 
-    def __init__(self):
+    def __init__(self,pos):
+        super().__init__()
         pygame.sprite.Sprite.__init__(self)
         Seeker_idle = os.path.join(img_folder,'MC','x3','ไฟล์_002.png')
         self.image = pygame.image.load(Seeker_idle).convert()
         self.image.set_colorkey(Black)
+        self.orig_image = self.image
         self.rect = self.image.get_rect()
         self.rect.centerx = Width / 2
         self.rect.bottom = Height / 2
+        self.pos = Vector2(pos)
 
     def update(self):
         Seeker_left = os.path.join(img_folder,'MC','x3','ไฟล์_001.png')
@@ -80,12 +84,24 @@ class Seeker(pygame.sprite.Sprite):
         
         if self.rect.bottom > Height:
             self.rect.bottom = Height
+
+        self.look()
     
     def attack(self):
         attack_effect = Attack_effect(self.rect.centerx,self.rect.top)
         all_sprites.add(attack_effect)
         attack_effects.add(attack_effect)
 
+    def look(self):
+        # The vector to the target (the mouse position).
+        direction = pygame.mouse.get_pos() - self.pos
+        # .as_polar gives you the polar coordinates of the vector,
+        # i.e. the radius (distance to the target) and the angle.
+        radius, angle = direction.as_polar()
+        # Rotate the image by the negative angle (y-axis in pygame is flipped).
+        #self.image = pygame.transform.rotate(self.orig_image, -angle)
+        # Create a new rect with the center of the old rect.
+        #self.rect = self.image.get_rect(center=self.rect.center)
     
 
 #class Leaderboard(pygame.sprite.Sprite):
@@ -151,20 +167,31 @@ class Enemy(pygame.sprite.Sprite):
     
 
 class Attack_effect(pygame.sprite.Sprite):
-    def __init__(self,x,y):
+    def __init__(self , x, y, speed, targetx,targety):
         #angle = math.atan2(y, x) #get angle to target in radians
         #print('Angle in degrees:', int(angle*180/math.pi))
         #self.dx = math.cos(angle)*speed
         #self.dy = math.sin(angle)*speed
         #self.x = x
         #self.y = y
-        pygame.sprite.Sprite.__init__(self)
+        #pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((10,20))
         self.image.fill(RED)
-        self.rect =self.image.get_rect()
-        self.rect.bottom =y
-        self.rect.centerx =x
-        self.speedy = -10
+        #self.rect =self.image.get_rect()
+        #self.rect.bottom =y
+        #self.rect.centerx =x
+        #self.speed = 10 super().__init__(color, x, y, width, height, speed)
+        angle = math.atan2(targety-y, targetx-x) #get angle to target in radians
+        print("targetx =",targetx)
+        print("targety =", targety)
+        print("x =",x)
+        print("y =",y)
+
+        print('Angle in degrees:', int(angle*180/math.pi))
+        self.dx = math.cos(angle)*speed
+        self.dy = math.sin(angle)*speed
+        self.x = x
+        self.y = y
 
     def update(self):
         #self.x and self.y are floats (decimals) so I get more accuracy
@@ -177,13 +204,13 @@ class Attack_effect(pygame.sprite.Sprite):
         self.rect.y += self.speedy
 
 
-
-seeker = Seeker()
-all_sprites = pygame.sprite.Group()
+seeker = Seeker(0)
+all_sprites = pygame.sprite.Group(seeker)
 all_sprites.add(seeker)
 enemy = pygame.sprite.Group()
 hps = pygame.sprite.Group
-attack_effects = pygame.sprite.Group()
+#attack_effects = [pygame.sprite.Group()]
+attack_effects = []
 #leaderboard = Leaderboard()
 #all_sprites.add(leaderboard)
 
@@ -208,7 +235,6 @@ for i in range(5):
 Game_running = True
 char_hit_status = False
 char_hit_count = 0
-speed = 10
 score_p1 = 0
 
 
@@ -223,6 +249,12 @@ while Game_running:
                 seeker.attack()
             elif event.key == pygame.K_t:
                 print("mic on")
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            x,y = pygame.mouse.get_pos()
+            print(x,y)
+            a_e = Attack_effect(seeker.rect.centerx, seeker.rect.centery, 20, x,y)
+            
+
 
 
         all_sprites.update()
@@ -243,6 +275,10 @@ while Game_running:
         print("bottom =" , seeker.rect.bottom)
         print("left =" , seeker.rect.left)
         print("right =" , seeker.rect.right)
+        print("seeker.pos =", seeker.pos)
+        print("direction =", direction)
+        print("seeker.image =", seeker.image)
+        print("seeker.rect =", seeker.rect)
 
        
                                 
