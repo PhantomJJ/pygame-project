@@ -43,12 +43,16 @@ class Seeker(pygame.sprite.Sprite):
         self.rect.bottom = Height / 2
 
     def update(self):
+    #def update(self,Attack_effect):
         Seeker_left = os.path.join(img_folder,'MC','x3','ไฟล์_001.png')
         Seeker_right = os.path.join(img_folder,'MC','x3','ไฟล์_000.png')
         Seeker_up = os.path.join(img_folder,'MC','x3','ไฟล์_003.png')
         Seeker_down = os.path.join(img_folder,'MC','x3','ไฟล์_002.png')
+        #Seeker_look_direction = 
         self.speedx = 0
         self.speedy = 0
+
+        ############################################seeker move funtion
         keystate = pygame.key.get_pressed()
         if keystate[pygame.K_a]:
             self.image = pygame.image.load(Seeker_left).convert()
@@ -72,7 +76,8 @@ class Seeker(pygame.sprite.Sprite):
         
         self.rect.x += self.speedx
         self.rect.y += self.speedy
-        
+
+        ###################for avoid seeker run out of map
         if self.rect.right > Width + 10:
             self.rect.right = Width + 10
         
@@ -85,11 +90,36 @@ class Seeker(pygame.sprite.Sprite):
         if self.rect.bottom > Height:
             self.rect.bottom = Height
 
-        
-    
+    ####################################Seeker attack
     def attack(self):
+        Seeker_left = os.path.join(img_folder,'MC','x3','ไฟล์_001.png')
+        Seeker_right = os.path.join(img_folder,'MC','x3','ไฟล์_000.png')
+        Seeker_up = os.path.join(img_folder,'MC','x3','ไฟล์_003.png')
+        Seeker_down = os.path.join(img_folder,'MC','x3','ไฟล์_002.png')
         all_sprites.add(attack_effect)
         attack_effects.add(attack_effect)
+        attack_angle = angle_degree
+        
+
+        if attack_angle <= 45 and attack_angle >= -45:
+            self.image = pygame.image.load(Seeker_right).convert()
+            self.image.set_colorkey(Black)
+
+        if attack_angle < -45 and attack_angle >= -135:
+            self.image = pygame.image.load(Seeker_up).convert()
+            self.image.set_colorkey(Black)
+        
+        if (attack_angle > 135 and attack_angle <= 180) or (attack_angle < -135 and attack_angle >= -180):
+            if (attack_angle < -135 and attack_angle >= -180) or (attack_angle > 135 and attack_angle <= 180):
+                self.image = pygame.image.load(Seeker_left).convert()
+                self.image.set_colorkey(Black)
+        
+        if attack_angle >= 45 and attack_angle <=135:
+                self.image = pygame.image.load(Seeker_down).convert()
+                self.image.set_colorkey(Black)
+
+
+
 
 class HP1(pygame.sprite.Sprite):
     def __init__(self):
@@ -146,7 +176,6 @@ class Attack_effect(Seeker):
     def __init__(self , x, y,width, height,speed,targetx,targety):
         super().__init__()
         angle = math.atan2(targety-y, targetx-x) #get angle to target in radians
-        print('Angle in degrees:', int(angle*180/math.pi))
         self.dx = math.cos(angle)*speed
         self.dy = math.sin(angle)*speed
         self.x = x
@@ -173,9 +202,6 @@ all_sprites.add(seeker)
 enemy = pygame.sprite.Group()
 hps = pygame.sprite.Group
 attack_effects = pygame.sprite.Group()
-#attack_effects = []
-#leaderboard = Leaderboard()
-#all_sprites.add(leaderboard)
 
 hp1 = HP1()
 all_sprites.add(hp1)
@@ -215,7 +241,8 @@ while Game_running:
                 print("mic on")
         if event.type == pygame.MOUSEBUTTONDOWN:
             x,y = pygame.mouse.get_pos()
-            print(x,y)
+            angle_cal = math.atan2(y-seeker.rect.centery, x-seeker.rect.centerx)
+            angle_degree = int(angle_cal*180/math.pi)
             attack_effect = Attack_effect(seeker.rect.centerx,seeker.rect.centery,20,20,20,x,y)
             #a_e = Attack_effect(seeker.rect.centerx,seeker.rect.centery,x,y)
             #a_e = Attack_effect(seeker.rect.centerx, seeker.rect.centery, 20, x,y)
@@ -225,12 +252,12 @@ while Game_running:
 
         all_sprites.update()
 
-        ###################################hit enemy function
+        ###################################hit enemy function                                           
         hits_em = pygame.sprite.groupcollide(enemy,attack_effects,True,True)
         if hits_em:
             if hits_em:
                 em_count -= 1
-                score_p1 += 50
+                score_p1 += 50                                    
             if em_count <= 0:
                 wave += 1
                 for i in range(5*wave):
@@ -238,14 +265,15 @@ while Game_running:
                     all_sprites.add(em)
                     enemy.add(em)
                     em_count += 1
+        #################Check position seeker
+        #print("top =" , seeker.rect.top)
+        #print("bottom =" , seeker.rect.bottom)
+        #print("left =" , seeker.rect.left)
+        #print("right =" , seeker.rect.right)
 
-        print("top =" , seeker.rect.top)
-        print("bottom =" , seeker.rect.bottom)
-        print("left =" , seeker.rect.left)
-        print("right =" , seeker.rect.right)
-        print("direction =", direction)
-        print("seeker.image =", seeker.image)
-        print("seeker.rect =", seeker.rect)
+
+
+        
 
        
                                 
@@ -268,7 +296,6 @@ while Game_running:
         
         screen.blit(background,background.get_rect(center = (Width/2, Height/2)))
         #screen.blit(Score_p1,250,250)
-        print(img_folder)
 
         all_sprites.draw(screen)
         pygame.display.flip()
