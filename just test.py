@@ -234,10 +234,7 @@ while Game_running:
         if event.type == pygame.QUIT:
             Game_running = False
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                attack_effect = Attack_effect(seeker.rect.centerx,seeker.rect.centery,20,20,20,x,y)
-                seeker.attack()
-            elif event.key == pygame.K_t:
+            if event.key == pygame.K_e:
                 print("mic on")
         if event.type == pygame.MOUSEBUTTONDOWN:
             x,y = pygame.mouse.get_pos()
