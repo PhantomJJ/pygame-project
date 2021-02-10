@@ -140,7 +140,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.centerx = random.randrange(267,1500) 
     
     
-
+#########################################Attack_effect
 class Attack_effect(Seeker):
 
     def __init__(self , x, y,width, height,speed,targetx,targety):
@@ -158,14 +158,12 @@ class Attack_effect(Seeker):
         self.speedy = -5
 
     def update(self):
-        #self.x and self.y are floats (decimals) so I get more accuracy
-        #if I change self.x and y and then convert to an integer for
-        #the rectangle.
+
         self.x = self.x + self.dx
         self.y = self.y + self.dy
+        ###############################attack_effect position
         self.rect.x = int(self.x)
         self.rect.y = int(self.y)
-        #self.rect.y += self.speedy
 
 
 seeker = Seeker()
@@ -226,6 +224,8 @@ while Game_running:
 
 
         all_sprites.update()
+
+        ###################################hit enemy function
         hits_em = pygame.sprite.groupcollide(enemy,attack_effects,True,True)
         if hits_em:
             if hits_em:
