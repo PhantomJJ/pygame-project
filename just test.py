@@ -28,19 +28,19 @@ clock = pygame.time.Clock()
 background_pic = os.path.join(img_folder,'MC','2x','x2.jpeg')
 background = pygame.image.load(background_pic)
 
+######################################Seeker_class
+ 
 class Seeker(pygame.sprite.Sprite):
 
     def __init__(self):
-        #super().__init__()
         pygame.sprite.Sprite.__init__(self)
         Seeker_idle = os.path.join(img_folder,'MC','x3','ไฟล์_002.png')
         self.image = pygame.image.load(Seeker_idle).convert()
         self.image.set_colorkey(Black)
-        #self.orig_image = self.image
         self.rect = self.image.get_rect()
+        ##################################Seeker_position
         self.rect.centerx = Width / 2
         self.rect.bottom = Height / 2
-        #self.pos = Vector2(pos)
 
     def update(self):
         Seeker_left = os.path.join(img_folder,'MC','x3','ไฟล์_001.png')
@@ -91,29 +91,6 @@ class Seeker(pygame.sprite.Sprite):
         all_sprites.add(attack_effect)
         attack_effects.add(attack_effect)
 
-    #def look(self):
-        # The vector to the target (the mouse position).
-        #direction = pygame.mouse.get_pos() - self.pos
-        # .as_polar gives you the polar coordinates of the vector,
-        # i.e. the radius (distance to the target) and the angle.
-        #radius, angle = direction.as_polar()
-        # Rotate the image by the negative angle (y-axis in pygame is flipped).
-        #self.image = pygame.transform.rotate(self.orig_image, -angle)
-        # Create a new rect with the center of the old rect.
-        #self.rect = self.image.get_rect(center=self.rect.center)
-    
-
-#class Leaderboard(pygame.sprite.Sprite):
-    #def __init__(self):
-        #pygame.sprite.Sprite.__init__(self)
-        #self.image = pygame.Surface((100,100))
-        #self.image.fill(Indigo)
-        #self.rect = self.image.get_rect()
-        #self.rect.right = 180
-        #self.rect.top = 260
-
-
-
 class HP1(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -149,23 +126,21 @@ def lose_hp():
     elif char_hit_count == 3:
         hp3.image.fill(Black)
 
-
+#########################################Enemy_class
 class Enemy(pygame.sprite.Sprite):
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        #self.image = pygame.Surface((50,90))
-        #self.image.fill(RED)
         Enemy_idle = os.path.join(img_folder,'x2','สไลม โจมตีระยะประชิด','SLIME_STAND.png')
         self.image = pygame.image.load(Enemy_idle).convert()
         self.image.set_colorkey(Black)
         self.rect =self.image.get_rect()
+        ###############################################Enemy position
         self.rect.top = random.randrange(169,900)
         self.rect.centerx = random.randrange(267,1500) 
     
     
 
-#class Attack_effect(pygame.sprite.Sprite):
 class Attack_effect(Seeker):
 
     def __init__(self , x, y,width, height,speed,targetx,targety):
@@ -176,19 +151,10 @@ class Attack_effect(Seeker):
         self.dy = math.sin(angle)*speed
         self.x = x
         self.y = y
-        #pygame.sprite.Sprite.__init__(self)
+
         self.image = pygame.Surface((20,20))
         self.image.fill(RED)
         self.rect =self.image.get_rect()
-        #self.rect.centery =y
-        #self.rect.centerx =x
-        #self.speed = 10 super().__init__(color, x, y, width, height, speed)
-        #angle = math.atan2(targety-y, targetx-x) #get angle to target in radians
-        #print('Angle in degrees:', int(angle*180/math.pi))
-        #self.dx = math.cos(angle)*speed
-        #self.dy = math.sin(angle)*speed
-        #self.x = x
-        #self.y = y
         self.speedy = -5
 
     def update(self):
@@ -203,6 +169,7 @@ class Attack_effect(Seeker):
 
 
 seeker = Seeker()
+############all_sprites funtion
 all_sprites = pygame.sprite.Group(seeker)
 all_sprites.add(seeker)
 enemy = pygame.sprite.Group()
